@@ -6,14 +6,17 @@ import { Input } from "@/shared/input";
 import { useUserStore } from "@/store/user";
 import { Ionicons } from "@expo/vector-icons";
 import { useMutation } from "@tanstack/react-query";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { useState } from "react";
+import { useLocalSearchParams, useNavigation, useRouter } from "expo-router";
+import { dismissAll, dismissTo } from "expo-router/build/global-state/routing";
+import { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { z } from "zod";
 
 export default function LoginPage() {
-  const { dismissAll, back, replace } = useRouter();
+  const nav = useNavigation();
+
+  const { back, replace, dismissAll, push } = useRouter();
   const params = useLocalSearchParams();
   const setter = useUserStore((method) => method.setter);
   const [form, setForm] = useState({
@@ -25,14 +28,15 @@ export default function LoginPage() {
   // Using fromProduct & fromLogin to designate path
   // DismissAll is so the user can gensture back & profile drop the "login" from the navigation stack
   const handleMutationNavigation = () => {
-    dismissAll();
     if (params.fromProduct) {
-      replace({
+      dismissAll();
+      push({
         pathname: "/(tabs)/(index)/[productId]",
         params: { productId: `${params.fromProduct}`, fromLogin: "1" },
       });
     } else {
-      replace({ pathname: "/(tabs)/(index)" });
+      dismissAll();
+      push({ pathname: "/(tabs)/(index)" });
     }
   };
 
@@ -68,6 +72,7 @@ export default function LoginPage() {
         />
 
         <Input
+          secureTextEntry={true}
           label="Password"
           value={form.password}
           aria-label="password"
@@ -93,7 +98,6 @@ export default function LoginPage() {
       >
         Log In
       </Button>
-      <Text> {mutation?.data?.name.firstname} </Text>
     </SafeAreaView>
   );
 }

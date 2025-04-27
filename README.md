@@ -5,6 +5,10 @@
 
 -----
 
+# Demo Video
+Quick loom to demo the project, talk about some fun aspects & help any familuarize themself with the project
+## [📺 Loom](https://www.loom.com/share/01730d472d3b42b297d80df44f14c33b?sid=ced94ad4-2400-4106-ae40-c8f44e4c21c1)
+
 ## __Pre Req__
 This app using Expo, so you'll need to ensure you have expo installed globaly or use `npx` before using an expo command
 

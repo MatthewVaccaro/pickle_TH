@@ -1,15 +1,11 @@
-import { Text, View, StyleSheet, Pressable } from "react-native";
-import React, {
-  forwardRef,
-  useCallback,
-  useImperativeHandle,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet } from "react-native";
+import React, { forwardRef, useImperativeHandle, useRef } from "react";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import Sheet, { BottomSheetView } from "@gorhom/bottom-sheet";
+import Sheet, {
+  BottomSheetView,
+  BottomSheetBackdrop,
+} from "@gorhom/bottom-sheet";
 
 export const BottomSheet = forwardRef(function BottomSheet(
   props: {
@@ -20,67 +16,38 @@ export const BottomSheet = forwardRef(function BottomSheet(
   ref,
 ) {
   const bottomSheetRef = useRef<Sheet>(null);
-  const [isOpen, setIsOpen] = useState(false);
+  const inset = useSafeAreaInsets();
 
   // 🚧 This requires manual typing when being used 🚧
   const externalMethods = {
     handleClosePress: () => {
       bottomSheetRef.current?.close();
-      setIsOpen(false);
     },
     handleExpandPress: () => {
       bottomSheetRef.current?.expand();
-      setIsOpen(true);
     },
   };
 
   // Ensure the component that uses the bottom sheet has access to the functions via a ref
   useImperativeHandle(ref, () => externalMethods);
 
-  const handleSheetChanges = useCallback((index: number) => {
-    if (index > -1) {
-      setIsOpen(true);
-    } else {
-      false;
-    }
-  }, []);
-
   return (
-    <GestureHandlerRootView style={styles.container}>
-      <View
-        style={{
-          width: "100%",
-          height: "100%",
-          opacity: 0.5,
-          position: "relative",
-        }}
-      >
-        {isOpen && (
-          <Pressable
-            onPress={() => externalMethods.handleClosePress()}
-            style={{
-              position: "absolute",
-              width: "100%",
-              height: "100%",
-              backgroundColor: "black",
-              top: 0,
-              zIndex: 10,
-              opacity: 0.5,
-            }}
-          />
-        )}
-        <SafeAreaView edges={["top"]} style={styles.container}>
-          {props.children}
-        </SafeAreaView>
-      </View>
+    <GestureHandlerRootView
+      style={StyleSheet.compose(styles.container, { paddingTop: inset.top })}
+    >
+      {props.children}
       {/* This could be made more exstensible but it suites our needs for the time being */}
       <Sheet
+        backdropComponent={(props) => (
+          <BottomSheetBackdrop
+            {...props}
+            style={[props.style, { backgroundColor: "rgba(0,0,0,0.7)" }]} // Your custom color here
+          />
+        )}
         enablePanDownToClose
         snapPoints={["30%"]}
         index={props.intial ? 1 : -1}
         ref={bottomSheetRef}
-        onChange={handleSheetChanges}
-        onClose={() => setIsOpen(false)}
       >
         <BottomSheetView style={styles.contentContainer}>
           {props.component}
@@ -93,6 +60,7 @@ export const BottomSheet = forwardRef(function BottomSheet(
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "white",
   },
   contentContainer: {
     flex: 1,

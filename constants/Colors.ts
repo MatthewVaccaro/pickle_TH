@@ -15,5 +15,9 @@ export const Colors = {
     mid: "#333",
     light: "#888",
     veryLight: "#D6D6D6",
+    lighest: "#EAEAEA",
+  },
+  red: {
+    error: "#BC4E50",
   },
 };

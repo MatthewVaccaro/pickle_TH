@@ -31,6 +31,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="profile"
         options={{
+          animation: "shift",
           title: "Profile",
           tabBarIcon: ({ focused }) => (
             <Ionicons
@@ -45,6 +46,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="orders"
         options={{
+          animation: "fade",
           href: user ? "/orders" : null,
           title: "Orders",
           tabBarIcon: ({ focused }) => (

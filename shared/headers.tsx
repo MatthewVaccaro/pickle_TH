@@ -1,5 +1,4 @@
-import { Text, StyleSheet } from "react-native";
-import { TextProps } from "react-native/Libraries/Text/Text";
+import { Text, StyleSheet, TextProps } from "react-native";
 
 export const Heading = () => <div />;
 
